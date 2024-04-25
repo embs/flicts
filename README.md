@@ -1,24 +1,27 @@
-# README
+### Build lambda
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+    docker build -f Dockerfile.build -t awsruby32 .
 
-Things you may want to cover:
+    docker run --rm -it -v $PWD:/var/task -w /var/task awsruby32
 
-* Ruby version
+    yum install -y mariadb-devel libyaml-devel
 
-* System dependencies
+    bundle config --local build.mysql2 --with-mysql2-config=/usr/lib64/mysql/mysql_config
 
-* Configuration
+    bundle config set --local path 'vendor/bundle' && bundle install
 
-* Database creation
+    cp -a /usr/lib64/mysql/*.so.* /var/task/lib/
 
-* Database initialization
+    zip -r lamb.zip app bin config config.ru db Gemfile Gemfile.lock lib public Rakefile storage tmp vendor
 
-* How to run the test suite
+### Clean up
 
-* Services (job queues, cache servers, search engines, etc.)
+    sudo rm -rf .bundle/
 
-* Deployment instructions
+### Start services
 
-* ...
+    docker compose up [-d]
+
+### Deploy lambda
+
+    TF_VAR_FLISOLFLICTS_GMAIL_PASSWORD=$FLISOLFLICTS_GMAIL_PASSWORD tflocal apply
